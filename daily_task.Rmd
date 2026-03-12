@@ -278,13 +278,13 @@ for (week_label in distinct_weeks) {
         select(date, pref, category, value, year, week_label_clean) %>%
         mutate(value = as.double(value)) %>%
         filter(!(category == "ＲＳウイルス感染症" & is.na(value))) %>%
-        mutate(value = ifelse(is.na(value), 0, value)) %>%
-        left_join(pref_lookup, by = "pref") %>%
-        select(-pref) %>%
-        rename(pref=pref_en) %>%
-        left_join(disease_lookup, by = "category") %>%
-        select(-category) %>%
-        rename(category=category_en)
+        mutate(value = ifelse(is.na(value), 0, value)) #%>%
+        #left_join(pref_lookup, by = "pref") %>%
+        #select(-pref) %>%
+        #rename(pref=pref_en) %>%
+        #left_join(disease_lookup, by = "category") %>%
+        #select(-category) %>%
+        #rename(category=category_en)
 
       log_entry <- tibble(
         timestamp  = as.character(ts),
@@ -342,6 +342,7 @@ if (length(data_list) > 0) {
 }
 
 ```
+
 
 
 

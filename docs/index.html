@@ -133,8 +133,8 @@
     function computeTickFormat(domain) {
       const start = domain[0], end = domain[1];
       const diffMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-      if (diffMonths < 12) return d3.timeFormat("%b");
-      if (diffMonths < 24) return d3.timeFormat("%b %Y");
+      if (diffMonths < 12) return d3.timeFormat("%-m月");
+      if (diffMonths < 24) return d3.timeFormat("%Y年%-m月");
       return d3.timeFormat("%Y");
     }
 
@@ -800,8 +800,8 @@ const xContext = d3.scaleTime()
 
 const xAxisContext = d3.axisBottom(xContext)
   .ticks(d3.timeYear.every(3))
-  .tickFormat(d3.timeFormat("%Y"));
-
+  .tickFormat(d => `${d.getFullYear()}年`);
+      
 // SVG
 const svgContext = sliderWrapper.append("svg")
   .attr("class", "svg-content")
@@ -942,6 +942,7 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
+
 
 
 

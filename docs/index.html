@@ -28,7 +28,7 @@
   <meta name="twitter:image" content="https://ryomakom.github.io/infectious_diseases_trends/ogp.png">
 
   <script src="https://d3js.org/d3.v6.min.js"></script>
-  <link rel="stylesheet" href="style07.css" />
+  <link rel="stylesheet" href="style08.css" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.min.js"></script>
@@ -679,17 +679,17 @@
         });
       }
 
-      const GAP = 10;
+      const GAP = 6;
       const paddingLR = 20;
       const cardInnerW = container.node().clientWidth - paddingLR;
 
       const oneCol = isOneColumnLayout();
 
-      const forcedLegendW = oneCol ? 84 : 160;
+      const forcedLegendW = oneCol ? 72 : 110;
       legendContainer.style("width", forcedLegendW + "px");
       legendContainer.style("max-width", forcedLegendW + "px");
       legendContainer.style("min-width", forcedLegendW + "px");
-      
+
       const legendW = forcedLegendW;
       const available = Math.floor(cardInnerW - (legendW + GAP));
       const leftW = Math.max(180, available);
@@ -1003,5 +1003,6 @@
   </script>
 </body>
 </html>
+
 
 

@@ -2,8 +2,32 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>都道府県別にみた主な感染症の流行状況</title>
+  <title>都道府県別にみた主な感染症の流行状況 | 定点当たり患者数の推移</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="国立健康危機管理研究機構の公開データをもとに、都道府県別の主な感染症について定点当たり患者数の週次推移をインタラクティブに可視化したページです。COVID-19、インフルエンザ、RSウイルス感染症、感染性胃腸炎、手足口病などを比較できます。">
+  <meta name="keywords" content="感染症,都道府県別,定点当たり患者数,COVID-19,インフルエンザ,ＲＳウイルス感染症,感染性胃腸炎,手足口病,水痘,突発性発しん,伝染性紅斑,ヘルパンギーナ,流行性耳下腺炎,流行性角結膜炎,急性出血性結膜炎,マイコプラズマ肺炎,クラミジア肺炎,細菌性髄膜炎,無菌性髄膜炎,咽頭結膜熱,Ａ群溶血性レンサ球菌咽頭炎,感染性胃腸炎（ロタウイルス）">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="小宮山亮磨">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="canonical" href="https://ryomakom.github.io/infectious_diseases_trends/">
+  <link rel="alternate" hreflang="ja" href="https://ryomakom.github.io/infectious_diseases_trends/">
+
+  <!-- OGP -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="Ryoma Komiyama">
+  <meta property="og:title" content="都道府県別にみた主な感染症の流行状況">
+  <meta property="og:description" content="国立健康危機管理研究機構の公開データをもとに、都道府県別の主な感染症の定点当たり患者数の週次推移を可視化しています。">
+  <meta property="og:url" content="https://ryomakom.github.io/infectious_diseases_trends/">
+  <meta property="og:image" content="https://ryomakom.github.io/infectious_diseases_trends/ogp.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="都道府県別にみた主な感染症の流行状況">
+  <meta name="twitter:description" content="都道府県別の主な感染症の定点当たり患者数の週次推移をインタラクティブに表示。">
+  <meta name="twitter:image" content="https://ryomakom.github.io/infectious_diseases_trends/ogp.png">
 
   <!-- D3.js v6 -->
   <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -11,9 +35,57 @@
   <!-- 外部CSS -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- d3-simple-slider（あなたのコードに合わせて残す） -->
+  <!-- d3-simple-slider -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.min.js"></script>
+
+  <!-- 構造化データ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "都道府県別にみた主な感染症の流行状況",
+    "description": "国立健康危機管理研究機構の公開データをもとに、都道府県別の主な感染症について定点当たり患者数の週次推移を可視化したデータページ。",
+    "url": "https://ryomakom.github.io/infectious_diseases_trends/",
+    "inLanguage": "ja",
+    "creator": {
+      "@type": "Person",
+      "name": "小宮山亮磨"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "小宮山亮磨"
+    },
+    "keywords": [
+      "感染症",
+      "都道府県別",
+      "定点当たり患者数",
+      "COVID-19",
+      "インフルエンザ",
+      "ＲＳウイルス感染症",
+      "感染性胃腸炎",
+      "手足口病",
+      "水痘",
+      "突発性発しん",
+      "伝染性紅斑",
+      "ヘルパンギーナ",
+      "流行性耳下腺炎",
+      "流行性角結膜炎",
+      "急性出血性結膜炎",
+      "マイコプラズマ肺炎",
+      "クラミジア肺炎",
+      "細菌性髄膜炎",
+      "無菌性髄膜炎",
+      "咽頭結膜熱",
+      "Ａ群溶血性レンサ球菌咽頭炎",
+      "感染性胃腸炎（ロタウイルス）"
+    ],
+    "isBasedOn": {
+      "@type": "DataCatalog",
+      "name": "国立健康危機管理研究機構 感染症発生動向調査"
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -943,6 +1015,7 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
+
 
 
 

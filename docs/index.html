@@ -83,7 +83,7 @@
 
 <body>
   <header>
-    <h1>都道府県別にみた主な感染症の流行状況</h1>
+    <h1>主な感染症の流行状況</h1>
     <div class="header-meta">
       <p class="author">
         小宮山亮磨　朝日新聞デジタル企画報道部
@@ -96,9 +96,10 @@
 
   <section class="page-summary">
     <p>
+      新型コロナウイルス感染症（COVID-19）やインフルエンザなど、主な感染症の流行状況を都道府県ごとに時系列で比較できます。
       <a href="https://id-info.jihs.go.jp/surveillance/idwr/provisional/sokuhou.html" target="_blank" rel="noopener">
-      国立健康危機管理研究機構</a>のデータをもとに、
-      主な感染症の定点当たり患者数の推移を都道府県ごとに確認できます。
+      国立健康危機管理研究機構</a>のデータをGitHub Actionsで自動収集し、
+      定点あたり患者数の推移をD3.jsで可視化しています。
     </p>
 
     <p class="usage-note">
@@ -997,6 +998,7 @@
   </script>
 </body>
 </html>
+
 
 
 

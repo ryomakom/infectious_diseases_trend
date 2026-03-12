@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Infectious Disease Trends by Prefecture in Japan</title>
+  <title>都道府県別にみた主な感染症の流行状況</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- D3.js v6 -->
@@ -23,21 +23,21 @@
     <p style="font-size:16px; line-height:1.5;">
       <a href="https://id-info.jihs.go.jp/surveillance/idwr/rapid/sokuhou.html" target="_blank" rel="noopener">
       国立健康危機管理研究機構</a>のデータから、都道府県別の定点当たり感染症報告数の推移を
-      インタラクティブなグラフで表示しています。
+      インタラクティブなグラフで表示しています。 週単位で報告されている「5類感染症」が対象。
       GitHub Actionsで自動的にデータを集め、D3.jsで可視化しています。
       下部の黄色いバーをドラッグすると、表示する期間を変更できます。
     </p>
 
     <p style="font-size:14px; text-align:right;">
-      Ryoma Komiyama, The Asahi Shimbun —
-      <a href="https://ryomakom-en.github.io/about_me/">Home</a>
+      小宮山亮磨 朝日新聞デジタル企画報道部 —
+      <a href="https://ryomakom.github.io/my_profile/">Home</a>
     </p>
     <hr style="margin: 20px 0; border: none; border-top: 2px solid #ddd;">
   </header>
 
   <section class="controls-card">
     <div class="controls-title">
-      Compare regions and diseases
+      表示する都道府県と感染症を選択 
     </div>
 
     <!-- Prefectures -->
@@ -45,12 +45,12 @@
       <div class="filter-actions">
         <div class="select-wrap">
           <select id="pref-add">
-            <option value="">Add prefecture</option>
+            <option value="">都道府県を選択</option>
           </select>
         </div>
 
         <button id="pref-reset" type="button" class="link-button">
-          Reset
+          リセット
         </button>
       </div>
       
@@ -71,12 +71,12 @@
       <div class="filter-actions">
         <div class="select-wrap">
           <select id="disease-add">
-            <option value="">Add disease</option>
+            <option value="">感染症を選択</option>
           </select>
         </div>
 
         <button id="disease-reset" type="button" class="link-button">
-          Reset
+          リセット
         </button>
       </div>
 
@@ -930,6 +930,7 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
+
 
 
 

@@ -219,12 +219,13 @@ disease_lookup <- tibble::tribble(
 )
 
 cleaned_diseases %>% 
-  left_join(pref_lookup, by = "pref") %>%
-  select(-pref) %>%
-  rename(pref=pref_en) %>%
-  left_join(disease_lookup, by = "category") %>%
-  select(-category) %>%
-  rename(category=category_en) %>% 
+  #left_join(pref_lookup, by = "pref") %>%
+  #select(-pref) %>%
+  #rename(pref=pref_en) %>%
+  #left_join(disease_lookup, by = "category") %>%
+  #select(-category) %>%
+  #rename(category=category_en) %>% 
   write_excel_csv("merged_data/merged_data.csv")
 ```
+
 

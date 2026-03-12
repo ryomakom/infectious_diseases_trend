@@ -99,10 +99,8 @@ diseases <- csv_files %>%
 
 
 # D3ビジュアライズ用のデータ
-
-
-
 cleaned_diseases <- diseases %>%
+  # 日付部分を列に展開
   bind_cols(
     str_match(.$week,
       "(\\d{4})年\\d+週\\((\\d{1,2})月(\\d{1,2})日～(\\d{1,2})月(\\d{1,2})日\\)"
@@ -110,30 +108,16 @@ cleaned_diseases <- diseases %>%
       as_tibble(.name_repair = "minimal") %>%
       setNames(c("full", "year_str", "m1", "d1", "m2", "d2"))
   ) %>%
-  mutate(across(c(m1, d1, m2, d2), as.integer)) %>%
-  mutate(
-    month1_en = month.name[m1],
-    month2_en = month.name[m2]
-  ) %>%
-  mutate(
-    week_label_clean = ifelse(
-      is.na(year_str),
-      NA_character_,
-      ifelse(
-        m1 == m2,
-        sprintf("%s %d–%d, %s",
-                month1_en, d1, d2, year_str),
-        sprintf("%s %d – %s %d, %s",
-                month1_en, d1, month2_en, d2, year_str)
-      )
-    )
-  ) %>%
-  # ★ ここで中間列を削除
-  select(
-    -full, -year_str,
-    -m1, -d1, -m2, -d2,
-    -month1_en, -month2_en
-  ) %>%
+  # 必要な列を整数に変換
+  mutate(across(c(m1, d1, m2, d2), ~ as.integer(.))) %>%
+  # ラベルを作成（条件付きで）
+  mutate(week_label_clean = ifelse(
+    is.na(year_str), NA_character_,
+    sprintf("%d月%d日～%d月%d日（%s年）",
+            m1, d1, m2, d2, year_str)
+  )) %>%
+  # 不要列削除
+  dplyr::select(-full, -year_str, -m1, -d1, -m2, -d2) %>%
   # 以降の処理を継続
   filter(str_detect(category, "定当")) %>% 
   mutate(category = str_remove(category, "_定当")) %>% 
@@ -141,6 +125,9 @@ cleaned_diseases <- diseases %>%
   mutate(value = as.double(value)) %>%
   filter(!(category == "ＲＳウイルス感染症" & is.na(value))) %>%
   mutate(value = ifelse(is.na(value), 0, value))
+
+cleaned_diseases %>% 
+  write_excel_csv("merged_data/merged_data.csv")
 
 pref_lookup <- tibble::tribble(
   ~pref, ~pref_en,
@@ -217,15 +204,7 @@ disease_lookup <- tibble::tribble(
   "百日咳", "Whooping cough",
   "COVID-19", "COVID-19"
 )
-
-cleaned_diseases %>% 
-  #left_join(pref_lookup, by = "pref") %>%
-  #select(-pref) %>%
-  #rename(pref=pref_en) %>%
-  #left_join(disease_lookup, by = "category") %>%
-  #select(-category) %>%
-  #rename(category=category_en) %>% 
-  write_excel_csv("merged_data/merged_data.csv")
 ```
+
 
 

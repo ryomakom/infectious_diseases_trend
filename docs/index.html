@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -28,7 +29,7 @@
   <meta name="twitter:image" content="https://ryomakom.github.io/infectious_diseases_trends/ogp.png">
 
   <script src="https://d3js.org/d3.v6.min.js"></script>
-  <link rel="stylesheet" href="style11.css" />
+  <link rel="stylesheet" href="style12.css" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.min.js"></script>
@@ -129,10 +130,6 @@
       <div id="pref-selected" class="filter-tags"></div>
     </div>
 
-    <div id="pref-dropdown" class="dropdown" style="display:none;">
-      <div id="dropdown-btn" class="dropdown-btn"></div>
-      <div id="dropdown-content" class="dropdown-content"></div>
-    </div>
 
     <div class="filter-group">
       <div class="filter-actions">
@@ -259,8 +256,10 @@
     const defaultCategories = new Set([
       "COVID-19","インフルエンザ","ＲＳウイルス感染症","感染性胃腸炎","手足口病"
     ]);
+    const defaultPrefs = ["全国", "東京都"];
 
     let selectedCategories = new Set(defaultCategories);
+    let selectedPrefs = new Set(defaultPrefs);
     let categoryDisplayOrder = allCategoryOrder.filter(d => selectedCategories.has(d));
 
     let refreshDiseaseOptions = () => {};
@@ -380,62 +379,20 @@
     }
 
     /***********************************************
-     * 都道府県ドロップダウン
+     * 都道府県選択 state
      ***********************************************/
     function initializeDropdown() {
-      const dropdownContent = d3.select("#dropdown-content");
-      dropdownContent.html("");
-
-      prefectureOrder.forEach(pref => {
-        dropdownContent.append("div")
-          .attr("class", "option")
-          .attr("data-pref", pref)
-          .text(pref)
-          .on("click", function(event) {
-            event.stopPropagation();
-            d3.select(this).classed("selected", !d3.select(this).classed("selected"));
-            updateDropdownBtn();
-            drawAllCharts(getSelectedDropdownPrefs());
-            renderSelectedTags();
-            refreshPrefOptions();
-          });
-      });
-
-      d3.select("#dropdown-btn").on("click", function(event) {
-        event.stopPropagation();
-        d3.select("#pref-dropdown").classed("open", !d3.select("#pref-dropdown").classed("open"));
-      });
-
-      d3.select("#pref-dropdown").on("click", function(event){
-        event.stopPropagation();
-      });
-
-      d3.select("body").on("click", function() {
-        d3.select("#pref-dropdown").classed("open", false);
-      });
+      // 旧 hidden dropdown を廃止。状態は selectedPrefs で一元管理する。
     }
 
     function setDefaultDropdownSelection() {
-      d3.selectAll("#dropdown-content .option")
-        .filter(function() {
-          const p = d3.select(this).attr("data-pref");
-          return (p === "Nationwide" || p === "全国" || p === "Tokyo" || p === "東京都");
-        })
-        .classed("selected", true);
-
-      updateDropdownBtn();
+      selectedPrefs = new Set(defaultPrefs);
       renderSelectedTags();
       refreshPrefOptions();
     }
 
     function updateDropdownBtn() {
-      const selected = getSelectedDropdownPrefs();
-      const btn = d3.select("#dropdown-btn");
-      if (selected.length === 0) {
-        btn.text("ここから選ぶ");
-      } else {
-        btn.text(selected.join(", "));
-      }
+      // hidden dropdown 廃止のため no-op
     }
 
     function renderSelectedTags(){
@@ -447,9 +404,13 @@
           .attr("class", "filter-tag")
           .text(p + " ×")
           .on("click", () => {
-            d3.select(`#dropdown-content .option[data-pref="${p}"]`)
-              .classed("selected", false);
-            updateDropdownBtn();
+            selectedPrefs.delete(p);
+
+            if (selectedPrefs.size === 0) {
+              selectedPrefs = new Set(defaultPrefs);
+            }
+
+            highlightedPref = null;
             drawAllCharts(getSelectedDropdownPrefs());
             renderSelectedTags();
             refreshPrefOptions();
@@ -466,6 +427,12 @@
           .on("click", () => {
             selectedCategories.delete(d);
             categoryDisplayOrder = categoryDisplayOrder.filter(x => x !== d);
+
+            if (selectedCategories.size === 0) {
+              selectedCategories = new Set(defaultCategories);
+              categoryDisplayOrder = allCategoryOrder.filter(x => selectedCategories.has(x));
+            }
+
             drawAllCharts(getSelectedDropdownPrefs());
             renderSelectedTags();
             refreshDiseaseOptions();
@@ -474,10 +441,7 @@
     }
 
     function getSelectedDropdownPrefs() {
-      const options = d3.selectAll("#dropdown-content .option").nodes();
-      return options
-        .filter(opt => opt.classList.contains("selected"))
-        .map(opt => opt.getAttribute("data-pref"));
+      return Array.from(selectedPrefs);
     }
 
     /***********************************************
@@ -557,13 +521,9 @@
         const val = select.value;
         if (!val) return;
 
-        d3.selectAll("#dropdown-content .option")
-          .filter(function () {
-            return d3.select(this).attr("data-pref") === val;
-          })
-          .classed("selected", true);
+        selectedPrefs.add(val);
+        highlightedPref = null;
 
-        updateDropdownBtn();
         drawAllCharts(getSelectedDropdownPrefs());
         renderSelectedTags();
 
@@ -572,22 +532,9 @@
       });
 
       resetBtn.addEventListener("click", () => {
-        d3.selectAll("#dropdown-content .option")
-          .classed("selected", false);
+        selectedPrefs = new Set(defaultPrefs);
+        highlightedPref = null;
 
-        d3.selectAll("#dropdown-content .option")
-          .filter(function () {
-            const p = d3.select(this).attr("data-pref");
-            return (
-              p === "Nationwide" ||
-              p === "Tokyo" ||
-              p === "全国" ||
-              p === "東京都"
-            );
-          })
-          .classed("selected", true);
-
-        updateDropdownBtn();
         drawAllCharts(getSelectedDropdownPrefs());
         renderSelectedTags();
         refreshOptions();
@@ -998,12 +945,4 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
 

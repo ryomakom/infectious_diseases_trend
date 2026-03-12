@@ -14,7 +14,6 @@
   <link rel="canonical" href="https://ryomakom.github.io/infectious_diseases_trends/">
   <link rel="alternate" hreflang="ja" href="https://ryomakom.github.io/infectious_diseases_trends/">
 
-  <!-- OGP -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:site_name" content="Ryoma Komiyama">
@@ -23,23 +22,17 @@
   <meta property="og:url" content="https://ryomakom.github.io/infectious_diseases_trends/">
   <meta property="og:image" content="https://ryomakom.github.io/infectious_diseases_trends/ogp.png">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="都道府県別にみた主な感染症の流行状況">
   <meta name="twitter:description" content="都道府県別の主な感染症の定点当たり患者数の週次推移をインタラクティブに表示。">
   <meta name="twitter:image" content="https://ryomakom.github.io/infectious_diseases_trends/ogp.png">
 
-  <!-- D3.js v6 -->
   <script src="https://d3js.org/d3.v6.min.js"></script>
+  <link rel="stylesheet" href="style05.css" />
 
-  <!-- 外部CSS -->
-  <link rel="stylesheet" href="style04.css" />
-
-  <!-- d3-simple-slider -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.min.js"></script>
 
-  <!-- 構造化データ -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -100,10 +93,10 @@
       <p id="last-updated" class="update-date"></p>
     </div>
   </header>
+
   <section class="page-summary">
     <p>
-       <a href="https://id-info.jihs.go.jp/surveillance/idwr/provisional/sokuhou.html" target="_blank" rel="noopener">
-         国立健康危機管理研究機構</a>の感染症発生動向調査の公開データをもとに、
+      <a href="https://id-info.jihs.go.jp/surveillance/idwr/provisional/sokuhou.html" target="_blank" rel="noopener">国立健康危機管理研究機構</a>の感染症発生動向調査の公開データをもとに、
       都道府県別の主な感染症について、定点当たり患者数の週次推移を確認できます。
       新型コロナウイルス感染症（COVID-19）、インフルエンザ、ＲＳウイルス感染症、感染性胃腸炎、手足口病、
       水痘、突発性発しん、伝染性紅斑、ヘルパンギーナなどの流行状況を
@@ -118,10 +111,9 @@
 
   <section class="controls-card">
     <div class="controls-title">
-      表示する都道府県と感染症を選択 
+      表示する都道府県と感染症を選択
     </div>
 
-    <!-- Prefectures -->
     <div class="filter-group">
       <div class="filter-actions">
         <div class="select-wrap">
@@ -134,20 +126,15 @@
           リセット
         </button>
       </div>
-      
-      <div id="pref-selected" class="filter-tags">
-        <!-- Nationwide × Tokyo × -->
-      </div>
+
+      <div id="pref-selected" class="filter-tags"></div>
     </div>
 
-
-    <!-- 既存ロジック用（非表示） -->
     <div id="pref-dropdown" class="dropdown" style="display:none;">
       <div id="dropdown-btn" class="dropdown-btn"></div>
       <div id="dropdown-content" class="dropdown-content"></div>
     </div>
 
-    <!-- Diseases -->
     <div class="filter-group">
       <div class="filter-actions">
         <div class="select-wrap">
@@ -161,9 +148,7 @@
         </button>
       </div>
 
-      <div id="disease-selected" class="filter-tags">
-        <!-- COVID-19 × Flu × RSV × ... -->
-      </div>
+      <div id="disease-selected" class="filter-tags"></div>
     </div>
   </section>
 
@@ -185,6 +170,7 @@
         }
       });
     }
+
     function removeOverlappingTicksY(axisSelection) {
       let lastBottom = -Infinity;
       axisSelection.selectAll("text").each(function () {
@@ -211,6 +197,7 @@
       if (diffMonths < 96) return d3.timeYear.every(2);
       return d3.timeYear.every(3);
     }
+
     function computeTickFormat(domain) {
       const start = domain[0], end = domain[1];
       const diffMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
@@ -220,7 +207,7 @@
     }
 
     /***********************************************
-     * Y軸 tick 値（あなたのロジック維持）
+     * Y軸 tick 値
      ***********************************************/
     function computeCustomYAxisTicks(xMax) {
       if (xMax <= 0) return [];
@@ -238,7 +225,6 @@
      ***********************************************/
     let allData = [];
 
-    // 都道府県表示順（日本語）
     const prefectureOrder = [
       "全国","北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
       "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
@@ -249,7 +235,6 @@
       "福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"
     ];
 
-    // disease_lookup と一致（全カテゴリ順）
     const allCategoryOrder = [
       "COVID-19",
       "インフルエンザ",
@@ -272,23 +257,16 @@
       "感染性胃腸炎（ロタウイルス）"
     ];
 
-    // デフォルト表示（指定の5つ）
     const defaultCategories = new Set([
       "COVID-19","インフルエンザ","ＲＳウイルス感染症","感染性胃腸炎","手足口病"
     ]);
 
-    // 現在表示しているカテゴリ
     let selectedCategories = new Set(defaultCategories);
-
-    // ★追加：表示順（先頭ほど上に表示）
     let categoryDisplayOrder = allCategoryOrder.filter(d => selectedCategories.has(d));
 
-    
-    // ★プルダウン候補を外から更新するための関数参照（後で代入する）
     let refreshDiseaseOptions = () => {};
     let refreshPrefOptions = () => {};
 
-    // ブラシ状態保持
     const savedBrushExtents = {};
 
     const parseDate = d3.timeParse("%Y-%m-%d");
@@ -300,7 +278,6 @@
 
     let highlightedPref = null;
 
-    // 「全国/東京都」英語でも日本語でも拾う（移行中のズレ対策）
     function isNationwide(p) { return p === "Nationwide" || p === "全国"; }
     function isTokyo(p)      { return p === "Tokyo" || p === "東京都"; }
 
@@ -310,15 +287,12 @@
            : color(pref);
     }
 
-    // 1列レイアウト判定（CSSのブレークポイントに合わせる）
     function isOneColumnLayout(){
       return window.matchMedia("(max-width: 899px)").matches;
     }
 
-    // class名に使えるよう安全化（スペース等を潰す）
     function cssSafe(str){
-        return encodeURIComponent(String(str))
-          .replace(/%/g, "_");
+      return encodeURIComponent(String(str)).replace(/%/g, "_");
     }
 
     /***********************************************
@@ -341,83 +315,70 @@
       });
     }
 
-    // 初期データ読み込み（あなたの現状のファイル名を維持）
     Promise.all([
       loadData("results/data-東京都.csv"),
       loadData("results/data-全国.csv")
     ]).then(results => {
-      results.forEach(dataset => { 
-        allData = allData.concat(dataset); 
+      results.forEach(dataset => {
+        allData = allData.concat(dataset);
       });
-      
+
       const latestDate = d3.max(allData, d => d.date);
 
       if (latestDate) {
         const y = latestDate.getFullYear();
         const m = latestDate.getMonth() + 1;
         const d = latestDate.getDate();
-        
+
         d3.select("#last-updated")
           .text(`最終更新：${y}年${m}月${d}日`);
       }
 
-      console.log("Essential data loaded. Total records:", allData.length);
-
       initializeDropdown();
       initializeCategoryControls();
       initializePrefControls();
-      
+
       setDefaultDropdownSelection();
       drawAllCharts(getSelectedDropdownPrefs());
-      
+
       loadAdditionalData();
-      setupResizeRedraw()
-      
+      setupResizeRedraw();
     }).catch(err => {
       console.error("Error loading essential CSV files:", err);
-});
+    });
 
     function loadAdditionalData() {
       loadData("results/data-その他.csv").then(dataOther => {
         allData = allData.concat(dataOther);
-        console.log("Additional data loaded. Total records:", allData.length);
-        // 追加データ反映（選択状態は維持）
         drawAllCharts(getSelectedDropdownPrefs());
       }).catch(err => {
         console.error("Error loading additional CSV file:", err);
       });
     }
 
-function setupResizeRedraw(){
-  let t = null;
+    function setupResizeRedraw(){
+      let t = null;
+      let lastW = (window.visualViewport ? window.visualViewport.width : window.innerWidth);
 
-  // ★「幅」だけ監視（iOSのスクロール由来の高さ変化は無視する）
-  let lastW = (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+      window.addEventListener("resize", () => {
+        const w = (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+        if (Math.abs(w - lastW) < 2) return;
 
-  window.addEventListener("resize", () => {
-    const w = (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+        lastW = w;
+        clearTimeout(t);
+        t = setTimeout(() => {
+          drawAllCharts(getSelectedDropdownPrefs());
+        }, 180);
+      });
 
-    // 幅がほぼ変わってないなら再描画しない（スクロールでのresize対策）
-    if (Math.abs(w - lastW) < 2) return;
-
-    lastW = w;
-
-    clearTimeout(t);
-    t = setTimeout(() => {
-      drawAllCharts(getSelectedDropdownPrefs());
-    }, 180);
-  });
-
-  // 端末回転は明示的に再描画
-  window.addEventListener("orientationchange", () => {
-    clearTimeout(t);
-    t = setTimeout(() => {
-      lastW = (window.visualViewport ? window.visualViewport.width : window.innerWidth);
-      drawAllCharts(getSelectedDropdownPrefs());
-    }, 250);
-  });
-}
-
+      window.addEventListener("orientationchange", () => {
+        clearTimeout(t);
+        t = setTimeout(() => {
+          lastW = (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+          drawAllCharts(getSelectedDropdownPrefs());
+        }, 250);
+      });
+    }
 
     /***********************************************
      * 都道府県ドロップダウン
@@ -437,7 +398,7 @@ function setupResizeRedraw(){
             updateDropdownBtn();
             drawAllCharts(getSelectedDropdownPrefs());
             renderSelectedTags();
-            refreshPrefOptions(); 
+            refreshPrefOptions();
           });
       });
 
@@ -446,7 +407,6 @@ function setupResizeRedraw(){
         d3.select("#pref-dropdown").classed("open", !d3.select("#pref-dropdown").classed("open"));
       });
 
-      // ★追加：dropdown内部クリックは body に伝播させない（選べない事故防止）
       d3.select("#pref-dropdown").on("click", function(event){
         event.stopPropagation();
       });
@@ -457,7 +417,6 @@ function setupResizeRedraw(){
     }
 
     function setDefaultDropdownSelection() {
-      // ★ここはあなたの元コードの思想を維持して、data-pref を確実に見る
       d3.selectAll("#dropdown-content .option")
         .filter(function() {
           const p = d3.select(this).attr("data-pref");
@@ -481,43 +440,40 @@ function setupResizeRedraw(){
     }
 
     function renderSelectedTags(){
-  // Prefectures
-  const prefBox = d3.select("#pref-selected");
-  prefBox.html("");
+      const prefBox = d3.select("#pref-selected");
+      prefBox.html("");
 
-  getSelectedDropdownPrefs().forEach(p => {
-    prefBox.append("div")
-      .attr("class", "filter-tag")
-      .text(p + " ×")
-      .on("click", () => {
-        d3.select(`#dropdown-content .option[data-pref="${p}"]`)
-          .classed("selected", false);
-        updateDropdownBtn();
-        drawAllCharts(getSelectedDropdownPrefs());
-        renderSelectedTags();
-        refreshPrefOptions(); 
+      getSelectedDropdownPrefs().forEach(p => {
+        prefBox.append("div")
+          .attr("class", "filter-tag")
+          .text(p + " ×")
+          .on("click", () => {
+            d3.select(`#dropdown-content .option[data-pref="${p}"]`)
+              .classed("selected", false);
+            updateDropdownBtn();
+            drawAllCharts(getSelectedDropdownPrefs());
+            renderSelectedTags();
+            refreshPrefOptions();
+          });
       });
-  });
 
-  // Diseases
-  const diseaseBox = d3.select("#disease-selected");
-  diseaseBox.html("");
+      const diseaseBox = d3.select("#disease-selected");
+      diseaseBox.html("");
 
-  [...selectedCategories].forEach(d => {
-    diseaseBox.append("div")
-      .attr("class", "filter-tag")
-      .text(d + " ×")
-      .on("click", () => {
-        selectedCategories.delete(d);
-        categoryDisplayOrder = categoryDisplayOrder.filter(x => x !== d);
-        drawAllCharts(getSelectedDropdownPrefs());
-        renderSelectedTags();
-        refreshDiseaseOptions();
+      [...selectedCategories].forEach(d => {
+        diseaseBox.append("div")
+          .attr("class", "filter-tag")
+          .text(d + " ×")
+          .on("click", () => {
+            selectedCategories.delete(d);
+            categoryDisplayOrder = categoryDisplayOrder.filter(x => x !== d);
+            drawAllCharts(getSelectedDropdownPrefs());
+            renderSelectedTags();
+            refreshDiseaseOptions();
+          });
       });
-  });
-}
+    }
 
-    
     function getSelectedDropdownPrefs() {
       const options = d3.selectAll("#dropdown-content .option").nodes();
       return options
@@ -528,163 +484,143 @@ function setupResizeRedraw(){
     /***********************************************
      * 病気追加コントロール
      ***********************************************/
-function initializeCategoryControls() {
-  const select = document.getElementById("disease-add");
-  const resetBtn = document.getElementById("disease-reset");
+    function initializeCategoryControls() {
+      const select = document.getElementById("disease-add");
+      const resetBtn = document.getElementById("disease-reset");
 
-  function refreshOptions() {
-    select.innerHTML = '<option value="">感染症を選択</option>';
+      function refreshOptions() {
+        select.innerHTML = '<option value="">感染症を選択</option>';
 
-    // ★「まだ選ばれていない病気」だけを出す
-    allCategoryOrder
-      .filter(d => !selectedCategories.has(d))
-      .forEach(d => {
-        const opt = document.createElement("option");
-        opt.value = d;
-        opt.textContent = d;
-        select.appendChild(opt);
+        allCategoryOrder
+          .filter(d => !selectedCategories.has(d))
+          .forEach(d => {
+            const opt = document.createElement("option");
+            opt.value = d;
+            opt.textContent = d;
+            select.appendChild(opt);
+          });
+      }
+
+      refreshDiseaseOptions = refreshOptions;
+
+      select.addEventListener("change", () => {
+        const val = select.value;
+        if (!val) return;
+
+        selectedCategories.add(val);
+        categoryDisplayOrder = categoryDisplayOrder.filter(x => x !== val);
+        categoryDisplayOrder.unshift(val);
+
+        drawAllCharts(getSelectedDropdownPrefs());
+        renderSelectedTags();
+        refreshOptions();
+        select.value = "";
       });
-  }
 
-  refreshDiseaseOptions = refreshOptions;
+      resetBtn.addEventListener("click", () => {
+        selectedCategories = new Set(defaultCategories);
+        categoryDisplayOrder = allCategoryOrder.filter(d => selectedCategories.has(d));
 
-  select.addEventListener("change", () => {
-    const val = select.value;
-    if (!val) return;
-
-    selectedCategories.add(val);
-
-    categoryDisplayOrder = categoryDisplayOrder.filter(x => x !== val);
-    categoryDisplayOrder.unshift(val);
-
-    drawAllCharts(getSelectedDropdownPrefs());
-    renderSelectedTags();
-
-    refreshOptions();     // ★追加後に再生成
-    select.value = "";
-  });
-
-  resetBtn.addEventListener("click", () => {
-    selectedCategories = new Set(defaultCategories);
-
-    categoryDisplayOrder = allCategoryOrder.filter(d => selectedCategories.has(d));
-
-    drawAllCharts(getSelectedDropdownPrefs());
-    renderSelectedTags();
-
-    refreshOptions();     // ★デフォルト以外だけ出す
-  });
-
-  refreshOptions();       // ★初期状態：デフォルトは出ない
-}
-
-    
-function initializePrefControls() {
-  const select = document.getElementById("pref-add");
-  const resetBtn = document.getElementById("pref-reset");
-
-  function getSelectedPrefsSet() {
-    return new Set(getSelectedDropdownPrefs());
-  }
-
-  function refreshOptions() {
-    select.innerHTML = '<option value="">都道府県を選択</option>';
-
-    const selected = getSelectedPrefsSet();
-
-    prefectureOrder
-      .filter(p => !selected.has(p))
-      .forEach(p => {
-        const opt = document.createElement("option");
-        opt.value = p;
-        opt.textContent = p;
-        select.appendChild(opt);
+        drawAllCharts(getSelectedDropdownPrefs());
+        renderSelectedTags();
+        refreshOptions();
       });
-  }
 
-  refreshPrefOptions = refreshOptions;
+      refreshOptions();
+    }
 
-  select.addEventListener("change", () => {
-    const val = select.value;
-    if (!val) return;
+    function initializePrefControls() {
+      const select = document.getElementById("pref-add");
+      const resetBtn = document.getElementById("pref-reset");
 
-    // 既存の「真の状態」をON
-    d3.selectAll("#dropdown-content .option")
-      .filter(function () {
-        return d3.select(this).attr("data-pref") === val;
-      })
-      .classed("selected", true);
+      function getSelectedPrefsSet() {
+        return new Set(getSelectedDropdownPrefs());
+      }
 
-    updateDropdownBtn();
-    drawAllCharts(getSelectedDropdownPrefs());
-    renderSelectedTags();
+      function refreshOptions() {
+        select.innerHTML = '<option value="">都道府県を選択</option>';
 
-    refreshOptions();     // ★追加後に再生成
-    select.value = "";
-  });
+        const selected = getSelectedPrefsSet();
 
-  resetBtn.addEventListener("click", () => {
-    // いったん全解除
-    d3.selectAll("#dropdown-content .option")
-      .classed("selected", false);
+        prefectureOrder
+          .filter(p => !selected.has(p))
+          .forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = p;
+            opt.textContent = p;
+            select.appendChild(opt);
+          });
+      }
 
-    // デフォルトだけON
-    d3.selectAll("#dropdown-content .option")
-      .filter(function () {
-        const p = d3.select(this).attr("data-pref");
-        return (
-          p === "Nationwide" ||
-          p === "Tokyo" ||
-          p === "全国" ||
-          p === "東京都"
-        );
-      })
-      .classed("selected", true);
+      refreshPrefOptions = refreshOptions;
 
-    updateDropdownBtn();
-    drawAllCharts(getSelectedDropdownPrefs());
-    renderSelectedTags();
+      select.addEventListener("change", () => {
+        const val = select.value;
+        if (!val) return;
 
-    refreshOptions();     // ★デフォルト以外だけ出す
-  });
+        d3.selectAll("#dropdown-content .option")
+          .filter(function () {
+            return d3.select(this).attr("data-pref") === val;
+          })
+          .classed("selected", true);
 
-  refreshOptions();       // ★初期状態
-}
+        updateDropdownBtn();
+        drawAllCharts(getSelectedDropdownPrefs());
+        renderSelectedTags();
 
+        refreshOptions();
+        select.value = "";
+      });
 
+      resetBtn.addEventListener("click", () => {
+        d3.selectAll("#dropdown-content .option")
+          .classed("selected", false);
+
+        d3.selectAll("#dropdown-content .option")
+          .filter(function () {
+            const p = d3.select(this).attr("data-pref");
+            return (
+              p === "Nationwide" ||
+              p === "Tokyo" ||
+              p === "全国" ||
+              p === "東京都"
+            );
+          })
+          .classed("selected", true);
+
+        updateDropdownBtn();
+        drawAllCharts(getSelectedDropdownPrefs());
+        renderSelectedTags();
+        refreshOptions();
+      });
+
+      refreshOptions();
+    }
 
     /***********************************************
-     * 全カテゴリーのグラフ描画（選択中カテゴリのみ）
+     * 全カテゴリーのグラフ描画
      ***********************************************/
     function drawAllCharts(selectedPrefs) {
       d3.select("#chart-container").html("");
-      // highlightedPref は保持（あなたの元の挙動に合わせる）
 
       const filtered = allData.filter(d => selectedPrefs.includes(d.pref));
       let catGroups = d3.groups(filtered, d => d.category);
 
-      // 選択中カテゴリだけ
       catGroups = catGroups.filter(([cat]) => selectedCategories.has(cat));
 
-// ★並び順：最近追加したもの（categoryDisplayOrderの先頭）を上に
-catGroups.sort((a, b) => {
-  const aCat = a[0];
-  const bCat = b[0];
+      catGroups.sort((a, b) => {
+        const aCat = a[0];
+        const bCat = b[0];
 
-  const ia = categoryDisplayOrder.indexOf(aCat);
-  const ib = categoryDisplayOrder.indexOf(bCat);
+        const ia = categoryDisplayOrder.indexOf(aCat);
+        const ib = categoryDisplayOrder.indexOf(bCat);
 
-  // どちらも displayOrder にあるなら、その順
-  if (ia !== -1 && ib !== -1) return ia - ib;
+        if (ia !== -1 && ib !== -1) return ia - ib;
+        if (ia !== -1) return -1;
+        if (ib !== -1) return 1;
 
-  // 片方だけあるなら、それを優先
-  if (ia !== -1) return -1;
-  if (ib !== -1) return 1;
-
-  // どちらも無い（基本ないはずだが保険）：従来順
-  return allCategoryOrder.indexOf(aCat) - allCategoryOrder.indexOf(bCat);
-});
-
+        return allCategoryOrder.indexOf(aCat) - allCategoryOrder.indexOf(bCat);
+      });
 
       catGroups.forEach(([cat, catData]) => {
         drawFocusContextChart(cat, catData);
@@ -692,37 +628,21 @@ catGroups.sort((a, b) => {
     }
 
     /***********************************************
-     * 1カテゴリー分のフォーカス＆コンテキストチャート
-     * ★変更は最小：
-     *   - viewBox依存をやめ、width/height実寸でSVG生成
-     *   - leftWをカード内実幅から算出してはみ出し防止
+     * 1カテゴリー分のチャート
      ***********************************************/
     function drawFocusContextChart(category, data) {
-      // =============================
-// Layout constants（必須）
-// =============================
+      const focusMargin = { top: 10, right: 20, bottom: 26, left: 36 };
+      const FOCUS_OUTER_H = 220;
+      const focusHeight = FOCUS_OUTER_H - focusMargin.top - focusMargin.bottom;
 
-// --- Focus chart ---
-const focusMargin = { top: 10, right: 20, bottom: 26, left: 36 };
-const FOCUS_OUTER_H = 220;
-const focusHeight =
-  FOCUS_OUTER_H - focusMargin.top - focusMargin.bottom;
-
-// --- Context (slider) ---
-const contextMargin = { top: 6, right: 26, bottom: 30, left: 44 }; // ★下・左右を増やす
-const contextHeight = 26;                                          // ★軸を少し下げる
-const CONTEXT_OUTER_H =
-  contextHeight + contextMargin.top + contextMargin.bottom;        // ★外枠は「中身＋margin」で自動計算
-
-
-
-
+      const contextMargin = { top: 8, right: 26, bottom: 30, left: 44 };
+      const contextHeight = 28;
+      const CONTEXT_OUTER_H = contextHeight + contextMargin.top + contextMargin.bottom;
 
       data.sort((a, b) => a.date - b.date);
       const dataExtent = d3.extent(data, d => d.date);
       const yMaxAll = d3.max(data, d => d.value) || 0;
 
-      // 初期表示：最新から過去1年
       const endDate = dataExtent[1] || new Date();
       const defaultStart = new Date(endDate.getFullYear() - 1, endDate.getMonth(), endDate.getDate());
       const initialExtent = savedBrushExtents[category] || [defaultStart, endDate];
@@ -735,8 +655,6 @@ const CONTEXT_OUTER_H =
 
       const wrapper = container.append("div").attr("class", "chart-wrapper");
       const leftCharts = wrapper.append("div").attr("class", "left-charts");
-
-      // 凡例（複数都道府県）
       const legendContainer = wrapper.append("div").attr("class", "chart-legend");
 
       const selectedPrefs = getSelectedDropdownPrefs();
@@ -761,35 +679,27 @@ const CONTEXT_OUTER_H =
         });
       }
 
-      /* --------------------------
-         ★はみ出し防止：leftWをカード内実幅から算出
-         - スマホ（1列）では凡例は下に回るので legendW=0 とみなす
-         -------------------------- */
-      const GAP = 10;          // .chart-wrapper の gap と合わせる
-      const paddingLR = 20;    // .chart の padding 10px*2（CSSと一致）
+      const GAP = 10;
+      const paddingLR = 20;
       const cardInnerW = container.node().clientWidth - paddingLR;
-      
+
       const oneCol = isOneColumnLayout();
       const legendW = oneCol ? 0 : (legendContainer.node().getBoundingClientRect().width || 0);
-      
+
       const available = Math.floor(cardInnerW - (oneCol ? 0 : (legendW + GAP)));
-      const leftW = Math.max(260, available);   // ★520強制をやめる（枠内に収める）
+      const leftW = Math.max(260, available);
       leftCharts.style("width", leftW + "px");
 
-// ★ここで「実際の leftCharts の幅」を測る（flexで縮んだ分を反映）
-const leftChartsW = leftCharts.node().clientWidth;
+      const leftChartsW = leftCharts.node().clientWidth;
 
-// SVG外枠（実測に合わせる）
-const totalFocusW = leftChartsW;
-const totalFocusH = FOCUS_OUTER_H;
+      const totalFocusW = leftChartsW;
+      const totalFocusH = FOCUS_OUTER_H;
+      const focusWidth = Math.max(1, totalFocusW - focusMargin.left - focusMargin.right);
 
-// 描画領域
-const focusWidth = Math.max(1, totalFocusW - focusMargin.left - focusMargin.right);
-
-const svgFocusRoot = leftCharts.append("svg")
-  .attr("class", "svg-content chart-svg")
-  .attr("width", totalFocusW)
-  .attr("height", totalFocusH);
+      const svgFocusRoot = leftCharts.append("svg")
+        .attr("class", "svg-content chart-svg")
+        .attr("width", totalFocusW)
+        .attr("height", totalFocusH);
 
       const svgFocus = svgFocusRoot.append("g")
         .attr("transform", `translate(${focusMargin.left},${focusMargin.top})`);
@@ -873,90 +783,144 @@ const svgFocusRoot = leftCharts.append("svg")
           });
       });
 
-/* --------------------------
-   Context（スライダー）
-   -------------------------- */
-const sliderWrapper = leftCharts.append("div")
-  .attr("class", "slider-wrapper");
+      const sliderWrapper = leftCharts.append("div")
+        .attr("class", "slider-wrapper");
 
-sliderWrapper.append("h3").text("表示期間");
+      const sliderHeader = sliderWrapper.append("div")
+        .attr("class", "slider-header");
 
-// 外枠サイズ（leftCharts 実測ベース）
-const totalCtxW = leftChartsW;
-const totalCtxH = CONTEXT_OUTER_H;
+      sliderHeader.append("h3").text("表示期間");
+      sliderHeader.append("p")
+        .attr("class", "slider-hint")
+        .text("左右のつまみをドラッグして表示期間を変更");
 
-// 先に width を確定（重要）
-const contextWidth =
-  Math.max(1, totalCtxW - contextMargin.left - contextMargin.right);
+      const totalCtxW = leftChartsW;
+      const totalCtxH = CONTEXT_OUTER_H;
+      const contextWidth = Math.max(1, totalCtxW - contextMargin.left - contextMargin.right);
 
-// scale / axis
-const xContext = d3.scaleTime()
-  .domain(dataExtent)
-  .range([0, contextWidth]);
+      const xContext = d3.scaleTime()
+        .domain(dataExtent)
+        .range([0, contextWidth]);
 
-const xAxisContext = d3.axisBottom(xContext)
-  .ticks(d3.timeYear.every(3))
-  .tickFormat(d => `${d.getFullYear()}年`);
-      
-// SVG
-const svgContext = sliderWrapper.append("svg")
-  .attr("class", "svg-content")
-  .attr("viewBox", `0 0 ${totalCtxW} ${totalCtxH}`)
-  .attr("preserveAspectRatio", "xMidYMid meet")
-  .append("g")
-  .attr("transform", `translate(${contextMargin.left},${contextMargin.top})`);
+      const xAxisContext = d3.axisBottom(xContext)
+        .ticks(d3.timeYear.every(3))
+        .tickFormat(d => `${d.getFullYear()}年`);
 
-// Axis
-const ctxAxisG = svgContext.append("g")
-  .attr("class", "axis x-axis")
-  .attr("transform", `translate(0,${contextHeight})`)
-  .call(xAxisContext);
+      const svgContext = sliderWrapper.append("svg")
+        .attr("class", "svg-content")
+        .attr("viewBox", `0 0 ${totalCtxW} ${totalCtxH}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .append("g")
+        .attr("transform", `translate(${contextMargin.left},${contextMargin.top})`);
 
-removeOverlappingTicksX(ctxAxisG);
+      svgContext.append("rect")
+        .attr("class", "slider-track-bg")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", contextWidth)
+        .attr("height", contextHeight);
 
-// Brush
-const brush = d3.brushX()
-  .extent([[0, 0], [contextWidth, contextHeight]])
-  .on("brush end", brushed);
+      const dimLeft = svgContext.append("rect")
+        .attr("class", "context-dim")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", contextHeight)
+        .attr("width", 0);
 
-const brushG = svgContext.append("g")
-  .attr("class", "brush")
-  .call(brush);
+      const dimRight = svgContext.append("rect")
+        .attr("class", "context-dim")
+        .attr("x", contextWidth)
+        .attr("y", 0)
+        .attr("height", contextHeight)
+        .attr("width", 0);
 
-// Handles
-const handleWidth = 30;
+      const ctxAxisG = svgContext.append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", `translate(0,${contextHeight})`)
+        .call(xAxisContext);
 
-brushG.selectAll(".handle")
-  .attr("width", handleWidth)
-  .attr("height", contextHeight)
-  .attr("y", 0)
-  .attr("x", (d, i) =>
-    i === 0 ? -handleWidth / 2 : contextWidth - handleWidth / 2
-  );
+      removeOverlappingTicksX(ctxAxisG);
 
-// Initial position
-if (savedBrushExtents[category]) {
-  brushG.call(brush.move, [
-    xContext(savedBrushExtents[category][0]),
-    xContext(savedBrushExtents[category][1])
-  ]);
-} else {
-  brushG.call(brush.move, [
-    xContext(initialExtent[0]),
-    xContext(initialExtent[1])
-  ]);
-}
+      const brush = d3.brushX()
+        .extent([[0, 0], [contextWidth, contextHeight]])
+        .on("brush end", brushed);
 
+      const brushG = svgContext.append("g")
+        .attr("class", "brush")
+        .call(brush);
 
-      // 初期表示でもハイライト反映
+      const handleWidth = 40;
+
+      brushG.selectAll(".handle")
+        .attr("width", handleWidth)
+        .attr("height", contextHeight)
+        .attr("y", 0)
+        .attr("x", (d, i) =>
+          i === 0 ? -handleWidth / 2 : contextWidth - handleWidth / 2
+        );
+
+      const gripLeft = brushG.append("g").attr("class", "brush-handle-grip");
+      gripLeft.append("line");
+      gripLeft.append("line");
+
+      const gripRight = brushG.append("g").attr("class", "brush-handle-grip");
+      gripRight.append("line");
+      gripRight.append("line");
+
+      function updateGrip(group, x) {
+        group.attr("transform", `translate(${x},0)`);
+        const lines = group.selectAll("line").nodes();
+        d3.select(lines[0])
+          .attr("x1", -3).attr("x2", -3)
+          .attr("y1", 6).attr("y2", contextHeight - 6);
+        d3.select(lines[1])
+          .attr("x1", 3).attr("x2", 3)
+          .attr("y1", 6).attr("y2", contextHeight - 6);
+      }
+
+      const initialSel = savedBrushExtents[category]
+        ? [
+            xContext(savedBrushExtents[category][0]),
+            xContext(savedBrushExtents[category][1])
+          ]
+        : [
+            xContext(initialExtent[0]),
+            xContext(initialExtent[1])
+          ];
+
+      brushG.call(brush.move, initialSel);
+
+      dimLeft
+        .attr("x", 0)
+        .attr("width", initialSel[0]);
+
+      dimRight
+        .attr("x", initialSel[1])
+        .attr("width", Math.max(0, contextWidth - initialSel[1]));
+
+      updateGrip(gripLeft, initialSel[0]);
+      updateGrip(gripRight, initialSel[1]);
+
       updateVisibility(svgFocus, selectedPrefs);
 
       function brushed(event) {
         const sel = event.selection;
         if (!sel) return;
 
+        const [sx0, sx1] = sel;
         const [x0, x1] = sel.map(xContext.invert);
         savedBrushExtents[category] = [x0, x1];
+
+        dimLeft
+          .attr("x", 0)
+          .attr("width", sx0);
+
+        dimRight
+          .attr("x", sx1)
+          .attr("width", Math.max(0, contextWidth - sx1));
+
+        updateGrip(gripLeft, sx0);
+        updateGrip(gripRight, sx1);
 
         xFocus.domain([x0, x1]);
 
@@ -1038,33 +1002,3 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

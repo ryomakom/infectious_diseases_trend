@@ -18,7 +18,7 @@
 
 <body>
   <header>
-    <h1>Infectious Disease Trends by Prefecture in Japan</h1>
+    <h1>都道府県別にみた主な感染症の流行状況</h1>
 
     <p style="font-size:16px; line-height:1.5;">
       <a href="https://id-info.jihs.go.jp/surveillance/idwr/rapid/sokuhou.html" target="_blank" rel="noopener">
@@ -767,7 +767,7 @@ const svgFocusRoot = leftCharts.append("svg")
           .on("mouseover", function(event, d) {
             d3.select(this).classed("highlight-circle", true);
             tooltip.transition().duration(200).style("opacity", 0.9);
-            tooltip.html(`<strong>${pref}</strong><br>Cases per site: ${d.value}<br>${d.weekLabel || ""}`)
+            tooltip.html(`<strong>${pref}</strong><br>定点あたり患者数: ${d.value}<br>${d.weekLabel || ""}`)
               .style("left", (event.pageX + 10) + "px")
               .style("top", (event.pageY - 28) + "px");
           })
@@ -942,6 +942,7 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
+
 
 
 

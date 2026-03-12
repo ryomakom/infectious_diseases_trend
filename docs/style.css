@@ -468,3 +468,7 @@ h1{
 .select-wrap{
   height: 36px;
 }
+
+.page-summary p {
+  max-width: 38em;
+}

@@ -28,7 +28,7 @@
   <meta name="twitter:image" content="https://ryomakom.github.io/infectious_diseases_trends/ogp.png">
 
   <script src="https://d3js.org/d3.v6.min.js"></script>
-  <link rel="stylesheet" href="style05.css" />
+  <link rel="stylesheet" href="style07.css" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.min.js"></script>
@@ -684,10 +684,16 @@
       const cardInnerW = container.node().clientWidth - paddingLR;
 
       const oneCol = isOneColumnLayout();
-      const legendW = oneCol ? 0 : (legendContainer.node().getBoundingClientRect().width || 0);
 
-      const available = Math.floor(cardInnerW - (oneCol ? 0 : (legendW + GAP)));
-      const leftW = Math.max(260, available);
+      const forcedLegendW = oneCol ? 84 : 160;
+      legendContainer.style("width", forcedLegendW + "px");
+      legendContainer.style("max-width", forcedLegendW + "px");
+      legendContainer.style("min-width", forcedLegendW + "px");
+      
+      const legendW = forcedLegendW;
+      const available = Math.floor(cardInnerW - (legendW + GAP));
+      const leftW = Math.max(180, available);
+
       leftCharts.style("width", leftW + "px");
 
       const leftChartsW = leftCharts.node().clientWidth;
@@ -997,4 +1003,5 @@
   </script>
 </body>
 </html>
+
 

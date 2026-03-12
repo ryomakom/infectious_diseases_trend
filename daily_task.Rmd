@@ -330,11 +330,11 @@ if (length(data_list) > 0) {
   cleaned_diseases <- cleaned_diseases %>%
     bind_rows(latest_data) %>% distinct()
   cleaned_diseases %>%
-    filter(pref == "Nationwide")  %>% write_excel_csv("docs/results/data-全国.csv")
+    filter(pref == "全国")  %>% write_excel_csv("docs/results/data-全国.csv")
   cleaned_diseases %>%
-    filter(pref == "Tokyo") %>% write_excel_csv("docs/results/data-東京都.csv")
+    filter(pref == "東京") %>% write_excel_csv("docs/results/data-東京都.csv")
   cleaned_diseases %>%
-    filter(!pref %in% c("Nationwide","Tokyo")) %>%
+    filter(!pref %in% c("全国","東京")) %>%
     write_excel_csv("docs/results/data-その他.csv")
   cleaned_diseases %>% write_excel_csv("merged_data/merged_data.csv")
 } else {
@@ -342,6 +342,7 @@ if (length(data_list) > 0) {
 }
 
 ```
+
 
 
 

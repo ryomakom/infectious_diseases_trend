@@ -33,7 +33,7 @@
   <script src="https://d3js.org/d3.v6.min.js"></script>
 
   <!-- 外部CSS -->
-  <link rel="stylesheet" href="style01.css" />
+  <link rel="stylesheet" href="style02.css" />
 
   <!-- d3-simple-slider -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-simple-slider/1.6.3/d3-simple-slider.css" />
@@ -91,6 +91,7 @@
 <body>
   <header> 
     <h1>都道府県別にみた主な感染症の流行状況</h1>
+    <p id="last-updated" class="update-date"></p>
   </header>
   <section class="page-summary">
     <h2>このページでわかること</h2>
@@ -337,22 +338,36 @@
       loadData("results/data-東京都.csv"),
       loadData("results/data-全国.csv")
     ]).then(results => {
-      results.forEach(dataset => { allData = allData.concat(dataset); });
+      results.forEach(dataset => { 
+        allData = allData.concat(dataset); 
+      });
+      
+      const latestDate = d3.max(allData, d => d.date);
+
+      if (latestDate) {
+        const y = latestDate.getFullYear();
+        const m = latestDate.getMonth() + 1;
+        const d = latestDate.getDate();
+        
+        d3.select("#last-updated")
+          .text(`最終更新：${y}年${m}月${d}日`);
+      }
+
       console.log("Essential data loaded. Total records:", allData.length);
 
       initializeDropdown();
       initializeCategoryControls();
       initializePrefControls();
-
-      setDefaultDropdownSelection();   // ★あなたの元コードのまま（ここが重要）
+      
+      setDefaultDropdownSelection();
       drawAllCharts(getSelectedDropdownPrefs());
-
+      
       loadAdditionalData();
-      setupResizeRedraw();
-
+      setupResizeRedraw()
+      
     }).catch(err => {
       console.error("Error loading essential CSV files:", err);
-    });
+});
 
     function loadAdditionalData() {
       loadData("results/data-その他.csv").then(dataOther => {
@@ -1015,6 +1030,7 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
+
 
 
 

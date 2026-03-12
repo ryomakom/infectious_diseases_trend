@@ -103,8 +103,8 @@
       地域ごとに比較できます。
     </p>
     <p>
-      下のグラフでは、都道府県や感染症を自由に追加して比較でき、
-      スライダーを使って表示する期間を変更できます。
+      グラフでは、都道府県や感染症を自由に追加して比較できます。
+      下部にあるスライダーを動かすと表示する期間を変えられます。左右のつまみを引っ張ると期間の長さも変わります。
       GitHub Actionsを使ってデータを自動で収集し、D3.jsで可視化しています。
     </p>
   </section>
@@ -635,8 +635,8 @@
       const FOCUS_OUTER_H = 220;
       const focusHeight = FOCUS_OUTER_H - focusMargin.top - focusMargin.bottom;
 
-      const contextMargin = { top: 8, right: 26, bottom: 30, left: 44 };
-      const contextHeight = 28;
+      const contextMargin = { top: 4, right: 20, bottom: 24, left: 36 };
+      const contextHeight = 20;
       const CONTEXT_OUTER_H = contextHeight + contextMargin.top + contextMargin.bottom;
 
       data.sort((a, b) => a.date - b.date);
@@ -789,11 +789,6 @@
       const sliderHeader = sliderWrapper.append("div")
         .attr("class", "slider-header");
 
-      sliderHeader.append("h3").text("表示期間");
-      sliderHeader.append("p")
-        .attr("class", "slider-hint")
-        .text("左右のつまみをドラッグして表示期間を変更");
-
       const totalCtxW = leftChartsW;
       const totalCtxH = CONTEXT_OUTER_H;
       const contextWidth = Math.max(1, totalCtxW - contextMargin.left - contextMargin.right);
@@ -849,7 +844,7 @@
         .attr("class", "brush")
         .call(brush);
 
-      const handleWidth = 40;
+      const handleWidth = 28;
 
       brushG.selectAll(".handle")
         .attr("width", handleWidth)
@@ -1002,3 +997,4 @@
   </script>
 </body>
 </html>
+

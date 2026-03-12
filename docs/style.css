@@ -1,0 +1,470 @@
+/* ===================================================
+   Reset / Base
+   =================================================== */
+
+*{ box-sizing: border-box; }
+
+html{
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body{
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 16px 16px 28px;
+  line-height: 1.5;
+  color: #111;
+  background: #fff;
+  overflow-x: hidden; /* はみ出し時の横スクロールを殺す保険 */
+}
+
+header{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 0 10px;
+}
+
+header p{
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h1{
+  text-align: center;
+  margin: 8px 0 14px;
+  font-size: clamp(20px, 3vw, 30px);
+}
+
+/* ===================================================
+   Controls card (current UI)
+   - HTMLで使っている: .controls-card, .controls-title,
+     .filter-group, .filter-actions, .filter-tags,
+     .filter-tag, .link-button
+   =================================================== */
+
+.controls-card{
+  max-width: 900px;
+  margin: 0 auto 14px;
+  padding: 10px 14px 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+}
+
+.controls-title{
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.filter-group{
+  margin-bottom: 10px;
+}
+
+
+.filter-group:last-of-type{
+  margin-bottom: 4px;
+}
+
+.filter-actions{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.controls-card select{
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+#pref-selected,
+#disease-selected{
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.link-button{
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link-button:hover{
+  text-decoration: underline;
+}
+
+.filter-tags{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-tag{
+  background: #eef2ff;
+  color: #1e3a8a;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-tag:hover{
+  background: #e0e7ff;
+}
+
+/* ===================================================
+   Hidden dropdown (internal state / debug-friendly)
+   - 現状は #pref-dropdown が display:none なので
+     見た目には影響しませんが、将来表示する時や
+     デバッグ時に困らないよう“安全側で残す”
+   =================================================== */
+
+.dropdown{
+  position: relative;
+  display: inline-block;
+  width: min(360px, 92vw);
+  text-align: left;
+}
+
+.dropdown-btn{
+  border: 1px solid #ccc;
+  padding: 10px 10px;
+  background: #fff;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.dropdown-content{
+  display: none;
+  position: absolute;
+  inset: calc(100% + 6px) 0 auto 0; /* ボタン直下 */
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 1000;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.dropdown.open .dropdown-content{ display: block; }
+
+.option{
+  padding: 10px 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  user-select: none;
+}
+.option:last-child{ border-bottom: none; }
+.option.selected{ background: #def; }
+
+
+/* ===================================================
+   Chart grid (1 / 2 / 3 columns)
+   =================================================== */
+
+#chart-container{
+  max-width: 1200px;
+  margin: 16px auto 0;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr; /* スマホ：1列 */
+}
+
+/* 中間：2列 */
+@media (min-width: 900px){
+  #chart-container{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* PC広め：3列 */
+@media (min-width: 1400px){
+  #chart-container{
+    max-width: 1500px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ===================================================
+   Chart card
+   =================================================== */
+
+.chart{
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 10px;
+  overflow: hidden; /* はみ出しの止血 */
+  container-type: inline-size;
+}
+
+.chart h2{
+  margin: 6px 0 8px;
+  font-size: 18px; /* 見出しは固定寄り（読みやすさ優先） */
+  line-height: 1.25;
+}
+
+/* ===================================================
+   Inner layout: left charts + legend
+   =================================================== */
+
+.chart-wrapper{
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  min-width: 0;
+  flex-wrap: nowrap;
+}
+
+.left-charts{
+  flex: 1 1 auto;
+  min-width: 0;      /* ← 必須 */
+  overflow: visible; /* ← Safari保険 */
+}
+
+.chart-legend{
+  flex: 0 0 auto;
+  width: fit-content;
+  max-width: 160px;
+  padding-left: 6px;
+  padding-right: 0;
+  overflow: visible;
+}
+
+.chart-legend .legend{
+  width: fit-content;
+}
+
+/* フォーカスチャートの下に余白を作る */
+.chart-svg{
+  margin-bottom: 12px;
+}
+
+/* ===================================================
+   Legend
+   =================================================== */
+
+.legend{
+  text-align: left;
+  font-size: 13px;
+}
+
+.legend-item{
+  display: block;
+  margin: 5px 0;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+@media (max-width: 600px){
+  .legend{
+    font-size: 12px;
+  }
+  .legend-item{
+    margin: 3px 0;
+    line-height: 1.2;
+  }
+}
+
+/* ===================================================
+   SVG (重要：スケールさせない)
+   =================================================== */
+
+.svg-content{
+  display: block;
+  max-width: 100%;
+}
+
+.chart svg{
+  max-width: 100%;
+  display: block;
+}
+
+/* 軸線 */
+.axis path,
+.axis line{
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/* ★軸文字（フォーカス側） */
+.chart-svg .axis text{
+  font-size: 12px;
+  dominant-baseline: central;
+}
+
+/* 線 */
+.line{
+  fill: none;
+  stroke-width: 2px;
+}
+
+/* SVGの間隔 */
+.chart svg + svg{
+  margin-top: 6px;
+}
+
+/* ===================================================
+   Tooltip
+   =================================================== */
+
+.tooltip{
+  position: absolute;
+  text-align: center;
+  padding: 6px 8px;
+  background: rgba(220,220,220,0.95);
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  font-size: 0.9rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.16);
+}
+
+/* ===================================================
+   Slider (Time range)
+   =================================================== */
+
+.slider-wrapper{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #f0f0f0;
+  padding: 6px 8px;        /* 縦を圧縮 */
+  margin-top: 12px;
+  margin-bottom: 2px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  flex-wrap: nowrap;
+
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.slider-wrapper h3{
+  margin: 0;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.slider-wrapper svg{
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  touch-action: none;
+  overflow: visible; /* 軸文字のクリップを防ぐ */
+  display: block;
+}
+
+/* スライダー目盛り */
+.slider-wrapper .axis text{
+  font-size: 15px;
+}
+
+/* ===================================================
+   Brush
+   =================================================== */
+
+.brush .overlay{
+  fill: none;
+  pointer-events: all;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.brush .selection{
+  fill: #ff0;
+  fill-opacity: 0.5;
+  cursor: move;
+}
+
+.brush .handle{
+  fill: rgba(255, 255, 0, 0.75);
+  stroke: rgba(255, 136, 0, 0.5);
+  stroke-width: 10px;
+  vector-effect: non-scaling-stroke;
+  cursor: ew-resize;
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
+  touch-action: none;
+}
+
+/* ===================================================
+   Highlight
+   =================================================== */
+
+.highlight-line{ stroke-width: 4px !important; }
+.highlight-circle{ r: 6 !important; }
+
+.inactive-line,
+.inactive-circle{ opacity: 0.15; }
+
+/* ===================================================
+   Select ▼ indicator
+   =================================================== */
+
+.select-wrap{
+  position: relative;
+  display: inline-block;
+}
+
+.select-wrap::after{
+  content: "▾";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #6b7280;          /* link-button と同系色 */
+  pointer-events: none;   /* クリックを邪魔しない */
+}
+
+.select-wrap select{
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 28px;    /* ▼のぶん余白 */
+}
+
+#pref-selected{
+  margin-bottom: 10px;
+}
+
+/* Add ○○ の直下の余白を強制的に揃える（保険） */
+.filter-actions{
+  margin-bottom: 6px !important;
+}
+.filter-actions + .filter-tags{
+  margin-top: 0 !important;
+}
+
+/* Add 行の高さを揃えて、見た目のズレを消す（本命） */
+.controls-card select{
+  height: 36px;
+}
+.link-button{
+  line-height: 36px;
+}
+.select-wrap{
+  height: 36px;
+}

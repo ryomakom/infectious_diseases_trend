@@ -253,18 +253,10 @@ for (week_label in distinct_weeks) {
           month1_en = month.name[m1],
           month2_en = month.name[m2]
           ) %>%
-        mutate(
-          week_label_clean = ifelse(
-            is.na(year_str),
-            NA_character_,
-            ifelse(
-              m1 == m2,
-              sprintf("%s %d–%d, %s",
-                      month1_en, d1, d2, year_str),
-              sprintf("%s %d – %s %d, %s",
-                      month1_en, d1, month2_en, d2, year_str)
-              )
-            )
+        mutate(week_label_clean = ifelse(
+    is.na(year_str), NA_character_,
+    sprintf("%d月%d日～%d月%d日（%s年）",
+            m1, d1, m2, d2, year_str))
           ) %>%
   # ★ ここで中間列を削除
   select(
@@ -342,6 +334,7 @@ if (length(data_list) > 0) {
 }
 
 ```
+
 
 
 

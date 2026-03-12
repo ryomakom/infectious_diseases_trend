@@ -437,7 +437,7 @@ function initializeCategoryControls() {
   const resetBtn = document.getElementById("disease-reset");
 
   function refreshOptions() {
-    select.innerHTML = '<option value="">Add disease</option>';
+    select.innerHTML = '<option value="">感染症を選択</option>';
 
     // ★「まだ選ばれていない病気」だけを出す
     allCategoryOrder
@@ -492,7 +492,7 @@ function initializePrefControls() {
   }
 
   function refreshOptions() {
-    select.innerHTML = '<option value="">Add prefecture</option>';
+    select.innerHTML = '<option value="">都道府県を選択</option>';
 
     const selected = getSelectedPrefsSet();
 
@@ -783,7 +783,7 @@ const svgFocusRoot = leftCharts.append("svg")
 const sliderWrapper = leftCharts.append("div")
   .attr("class", "slider-wrapper");
 
-sliderWrapper.append("h3").text("Time range");
+sliderWrapper.append("h3").text("表示期間");
 
 // 外枠サイズ（leftCharts 実測ベース）
 const totalCtxW = leftChartsW;
@@ -942,6 +942,7 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
+
 
 
 

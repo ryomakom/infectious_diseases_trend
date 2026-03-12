@@ -679,21 +679,17 @@
         });
       }
 
-      const GAP = 6;
+      const GAP = 4;
       const paddingLR = 20;
       const cardInnerW = container.node().clientWidth - paddingLR;
 
-      const oneCol = isOneColumnLayout();
+      /* 凡例の実際の幅を取得 */
+      const legendW = legendContainer.node().getBoundingClientRect().width || 0;
 
-      const forcedLegendW = oneCol ? 72 : 110;
-      legendContainer.style("width", forcedLegendW + "px");
-      legendContainer.style("max-width", forcedLegendW + "px");
-      legendContainer.style("min-width", forcedLegendW + "px");
-
-      const legendW = forcedLegendW;
-      const available = Math.floor(cardInnerW - (legendW + GAP));
-      const leftW = Math.max(180, available);
-
+      /* グラフの幅を残り全部にする */
+      const available = Math.floor(cardInnerW - legendW - GAP);
+      const leftW = Math.max(160, available);
+      
       leftCharts.style("width", leftW + "px");
 
       const leftChartsW = leftCharts.node().clientWidth;
@@ -1003,6 +999,7 @@
   </script>
 </body>
 </html>
+
 
 
 

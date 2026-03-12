@@ -236,7 +236,8 @@
 
     // class名に使えるよう安全化（スペース等を潰す）
     function cssSafe(str){
-      return String(str).replace(/[^a-zA-Z0-9_-]/g, "_");
+        return encodeURIComponent(String(str))
+          .replace(/%/g, "_");
     }
 
     /***********************************************
@@ -942,6 +943,7 @@ if (savedBrushExtents[category]) {
   </script>
 </body>
 </html>
+
 
 
 
